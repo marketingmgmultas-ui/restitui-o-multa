@@ -1,0 +1,10 @@
+BIBLIOTECA DE ÓRGÃOS — MG MULTAS
+
+1. Faça o deploy do CONTEÚDO desta pasta no Vercel, Netlify ou servidor com HTTPS.
+2. Abra a URL HTTPS no celular.
+3. Android/Chrome: toque em “Instalar app” ou menu ⋮ > Instalar.
+4. iPhone/Safari: Compartilhar > Adicionar à Tela de Início.
+5. PC/Chrome ou Edge: clique em “Instalar app” ou use o menu de instalação do navegador.
+
+IMPORTANTE: abrir index.html diretamente em file:// NÃO permite instalar o PWA; o HTML funciona como site local, mas instalação exige HTTPS (ou localhost para testes).
+Os dados são salvos neste navegador/dispositivo. Não sincroniza entre aparelhos. Use Backup/Importar para migrar dados.

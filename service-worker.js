@@ -1,5 +1,5 @@
-const CACHE = 'mg-orgaos-pwa-v2';
-const PRECACHE = ['./index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+const CACHE = 'mg-orgaos-pwa-v4-root';
+const PRECACHE = ['./index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
 });

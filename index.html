@@ -1271,7 +1271,6 @@
         min-width:0;width:100%; min-height:44px;height:auto;padding:10px 8px;
         justify-content:center; white-space:normal; text-align:center;
       }
-      .agency-panel .org-actions > button:last-child {border:1px solid #363840;}
       #dlg { width:calc(100vw - 16px); max-height:calc(100dvh - 16px); border-radius:16px; }
       #dlg form > div:first-child { max-height:calc(100dvh - 176px);padding:18px 16px; }
       #dlg > div:first-child { padding:16px; }
@@ -1659,73 +1658,49 @@ O serviço é gratuito e o prazo informado pelo órgão é de até 45 dias, desd
         const isCopied = copiedId === a.id;
         const hasPdf = Boolean(a.hasForm && a.pdfData);
         const hasFormLink = Boolean(a.hasForm && a.formUrl);
+        const canDownload = hasPdf || hasFormLink;
 
         return `
-          <div class="group px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#23242a]/75 transition">
-            <!-- Agency Info & Subtle Metadata -->
-            <div class="min-w-0 flex-1">
+          <div class="group relative px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:bg-[#23242a]/75 transition">
+            <button type="button" data-action="edit" data-id="${esc(a.id)}" title="Editar órgão" aria-label="Editar ${esc(a.name)}"
+              class="w-8 h-8 rounded-lg text-[#777984] hover:text-[#d1d3da] hover:bg-[#292a31] inline-flex items-center justify-center transition" style="position:absolute;top:12px;right:12px;z-index:1">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+
+            <div class="min-w-0 flex-1 pr-9 sm:pr-12">
               <div class="flex items-center gap-2.5 flex-wrap">
                 <span class="text-sm font-semibold text-[#f4f5f6] tracking-tight">${esc(a.name)}</span>
-                ${hasPdf ? `<span class="px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-800/60 text-[10px] font-medium">PDF</span>` : ''}
-                ${!hasPdf && hasFormLink ? `<span class="px-2 py-0.5 rounded-md bg-[#26272e] text-[#bbbdc7] text-[10px] font-medium">Formulário</span>` : ''}
+                ${canDownload ? `<span class="px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-800/60 text-[10px] font-medium">PDF</span>` : ''}
               </div>
-
-              <!-- Discreet Secondary Links (Service URL & Email) -->
               ${(a.url || a.email) ? `
                 <div class="flex items-center gap-3 mt-2 flex-wrap text-[11px] text-[#858894]">
                   ${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer" class="hover:text-[#dadbe0] inline-flex items-center gap-1 transition">↗ Site oficial</a>` : ''}
-                  ${a.email ? `<a href="mailto:${esc(a.email)}" class="hover:text-[#dadbe0] inline-flex items-center gap-1 transition">✉ ${esc(a.email)}</a>` : ''}
+                  ${a.email ? `<a href="mailto:${esc(a.email)}" class="hover:text-[#dadbe0] inline-flex items-center gap-1 transition break-all">✉ ${esc(a.email)}</a>` : ''}
                 </div>
               ` : ''}
             </div>
 
-            <!-- Direct Actions: Copy, Download/Form, Edit -->
-            <div class="org-actions flex items-center gap-2 shrink-0">
-              ${hasPdf ? `
-                <button type="button" data-action="pdf" data-id="${esc(a.id)}" title="Baixar PDF: ${esc(a.pdfName || 'formulario.pdf')}"
+            <div class="org-actions flex items-center gap-2 shrink-0 sm:pr-9">
+              ${canDownload ? `
+                <button type="button" data-action="form" data-id="${esc(a.id)}" title="Baixar formulário PDF"
                   class="h-9 px-3.5 rounded-xl border border-[#363840] bg-[#191a1f] hover:bg-[#23242a] hover:border-[#4b4e57] text-[#dadbe0] text-xs font-medium inline-flex items-center gap-1.5 transition">
-                  <svg class="w-3.5 h-3.5 text-[#a1a3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg class="w-4 h-4 text-[#a1a3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3" />
                   </svg>
-                  Baixar PDF
+                  Baixar formulário
                 </button>
               ` : ''}
-
-              ${hasFormLink ? `
-                <button type="button" data-action="download-form" data-id="${esc(a.id)}" title="Baixar formulário"
-                  class="h-9 px-3.5 rounded-xl border border-[#363840] bg-[#191a1f] hover:bg-[#23242a] hover:border-[#4b4e57] text-[#dadbe0] text-xs font-medium inline-flex items-center gap-1.5 transition">
-                  <svg class="w-3.5 h-3.5 text-[#a1a3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v10m0 0 4-4m-4 4-4-4M5 17v1a2 2 0 002 2h10a2 2 0 002-2v-1" />
-                  </svg>
-                  Baixar Form.
-                </button>
-              ` : ''}
-
               <button type="button" data-action="copy" data-id="${esc(a.id)}"
-                class="h-9 px-4 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-sm ${
-                  isCopied
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-brand hover:bg-brand-deep text-white'
-                }">
+                class="h-9 px-4 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition shadow-sm ${isCopied ? 'bg-emerald-600 text-white' : 'bg-brand hover:bg-brand-deep text-white'}">
                 ${isCopied ? `
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   Copiado
                 ` : `
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                  </svg>
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
                   Copiar
                 `}
-              </button>
-
-              <button type="button" data-action="edit" data-id="${esc(a.id)}" title="Editar órgão" aria-label="Editar ${esc(a.name)}"
-                class="w-8 h-8 rounded-lg border border-transparent hover:border-[#363840] hover:bg-[#191a1f] text-[#858894] hover:text-[#dadbe0] inline-flex items-center justify-center transition">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
               </button>
             </div>
           </div>
@@ -1811,14 +1786,7 @@ O serviço é gratuito e o prazo informado pelo órgão é de até 45 dias, desd
         toast('Download do formulário iniciado.');
       } catch (err) {
         console.warn(err);
-        const anchor = document.createElement('a');
-        anchor.href = a.formUrl;
-        anchor.setAttribute('download', 'formulario.pdf');
-        anchor.rel = 'noopener noreferrer';
-        document.body.append(anchor);
-        anchor.click();
-        anchor.remove();
-        toast('Tentando baixar o formulário...');
+        toast('Este site bloqueia downloads externos. Anexe o PDF no cadastro para baixar diretamente.');
       }
     }
 
@@ -2024,8 +1992,10 @@ O serviço é gratuito e o prazo informado pelo órgão é de até 45 dias, desd
       if (!a) return;
       const action = btn.dataset.action;
       if (action === 'copy') copyMessage(a);
-      else if (action === 'pdf') downloadSavedPdf(a);
-      else if (action === 'download-form') downloadFormLink(a);
+      else if (action === 'form') {
+        if (a.pdfData) downloadSavedPdf(a);
+        else downloadFormLink(a);
+      }
       else if (action === 'edit') openForm(a);
     });
 
